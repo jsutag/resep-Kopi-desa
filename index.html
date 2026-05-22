@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SOP Minuman - Kopi Desa</title>
+    <style>
+        :root {
+            /* Color Palette */
+            --bg-base: #F5F0E6; /* Putih Kecoklatan / Cream */
+            --card-bg: #FFFFFF;
+            --navy: #1A2B4C; /* Biru Dongker */
+            --navy-light: #2A406D;
+            --green: #2A5C43; /* Hijau Elegan */
+            --text-muted: #5A6B7C;
+            --border: #D9D2C5;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-base);
+            color: var(--navy);
+            margin: 0;
+            padding: 20px 16px; /* Padding disesuaikan untuk layar kecil */
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        
+        .header h1 {
+            margin: 0 0 4px 0;
+            color: var(--navy);
+            font-size: 1.8rem;
+        }
+        
+        .header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        /* Search Bar */
+        .search-bar {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 16px; /* 16px mencegah auto-zoom di iOS/iPhone saat ngetik */
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            outline: none;
+            background-color: var(--card-bg);
+            color: var(--navy);
+            transition: border-color 0.2s ease;
+        }
+        
+        .search-bar:focus {
+            border-color: var(--navy);
+        }
+        
+        /* Filter Tabs (Horizontal Scroll untuk HP) */
+        .filter-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 24px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            /* Menyembunyikan scrollbar bawaan tapi tetep bisa di-swipe */
+            scrollbar-width: none; 
+            -ms-overflow-style: none;
+        }
+        .filter-tabs::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .tab-btn {
+            background: var(--card-bg);
+            border: 1.5px solid var(--border);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            color: var(--navy-light);
+            transition: all 0.2s ease;
+        }
+        
+        .tab-btn.active {
+            background: var(--navy);
+            color: var(--card-bg);
+            border-color: var(--navy);
+        }
+
+        /* Card Layout */
+        .recipe-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 6px rgba(26, 43, 76, 0.05);
+        }
+        
+        .recipe-title {
+            margin: 0 0 12px 0;
+            font-size: 1.3rem;
+            color: var(--green);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1.5px dashed var(--border);
+            padding-bottom: 12px;
+        }
+        
+        .badge {
+            background: var(--bg-base);
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            color: var(--navy);
+            font-weight: 600;
+            border: 1px solid var(--border);
+        }
+        
+        .meta-info {
+            display: flex;
+            flex-wrap: wrap; /* Supaya turun ke bawah kalau di layar sempit */
+            gap: 12px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            background: var(--bg-base);
+            padding: 10px;
+            border-radius: 8px;
+            border-left: 3px solid var(--green);
+        }
+        
+        .section-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin: 16px 0 8px 0;
+            color: var(--navy-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        ul, ol {
+            margin: 0;
+            padding-left: 20px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--navy);
+        }
+        
+        li {
+            margin-bottom: 6px;
+        }
+        
+        .catatan-box {
+            margin-top: 16px;
+            padding: 12px;
+            background-color: #FEF2F2;
+            border-left: 4px solid #DC2626;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: #991B1B;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 600px) {
+            .header h1 { font-size: 1.5rem; }
+            .recipe-card { padding: 16px; }
+            .recipe-title { flex-direction: column; align-items: flex-start; gap: 8px; }
+            .badge { align-self: flex-start; }
+            .meta-info { flex-direction: column; gap: 6px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>SOP Minuman Kopi Desa</h1>
+        <p>Digital Recipe Catalog</p>
+    </div>
+
+    <input type="text" id="searchInput" class="search-bar" placeholder="Cari nama minuman, alat, atau bahan...">
+    
+    <div class="filter-tabs">
+        <button id="btnAll" class="tab-btn active" data-category="All">Semua</button>
+        <button class="tab-btn" data-category="Es Kopi">Es Kopi</button>
+        <button class="tab-btn" data-category="Hot Coffee">Hot Coffee</button>
+        <button class="tab-btn" data-category="Non Coffee">Non Coffee</button>
+        <button class="tab-btn" data-category="Based">Based / Dasar</button>
+    </div>
+
+    <div id="recipeContainer"></div>
+</div>
+
+<script src="data.js"></script>
+<script>
+    const container = document.getElementById('recipeContainer');
+    const searchInput = document.getElementById('searchInput');
+    const tabs = document.querySelectorAll('.tab-btn');
+    const btnAll = document.getElementById('btnAll');
+    
+    let currentCategory = 'All';
+
+    // Fix Bug: Set jumlah total resep secara dinamis via JS
+    btnAll.innerText = `Semua (${recipes.length})`;
+
+    function renderRecipes(data) {
+        container.innerHTML = '';
+        if (data.length === 0) {
+            container.innerHTML = '<p style="text-align:center; color:var(--text-muted); margin-top:40px;">Resep tidak ditemukan.</p>';
+            return;
+        }
+
+        data.forEach(recipe => {
+            const card = document.createElement('div');
+            card.className = 'recipe-card';
+            
+            const formatList = (arr) => arr.map(item => `<li>${item}</li>`).join('');
+
+            card.innerHTML = `
+                <h2 class="recipe-title">
+                    ${recipe.nama} 
+                    <span class="badge">SOP: ${recipe.id}</span>
+                </h2>
+                
+                <div class="meta-info">
+                    <div><strong>Kategori:</strong> ${recipe.kategori}</div>
+                    ${recipe.metode ? `<div><strong>Metode:</strong> ${recipe.metode}</div>` : ''}
+                    ${recipe.shelf_life ? `<div><strong>Shelf Life:</strong> ${recipe.shelf_life}</div>` : ''}
+                </div>
+                
+                <div class="section-title">Peralatan</div>
+                <ul>${formatList(recipe.peralatan)}</ul>
+
+                <div class="section-title">Bahan-Bahan</div>
+                <ul>${formatList(recipe.bahan)}</ul>
+
+                <div class="section-title">Langkah Pembuatan</div>
+                <ol>${formatList(recipe.step)}</ol>
+
+                ${recipe.catatan ? `<div class="catatan-box"><strong>Penting:</strong> ${recipe.catatan}</div>` : ''}
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    // Fungsi Gabungan Filter & Search
+    function filterAndSearch() {
+        const query = searchInput.value.toLowerCase();
+        
+        const filtered = recipes.filter(r => {
+            const matchesCategory = (currentCategory === 'All' || r.kategori === currentCategory);
+            const matchesSearch = (
+                r.nama.toLowerCase().includes(query) || 
+                r.bahan.some(b => b.toLowerCase().includes(query)) ||
+                r.peralatan.some(p => p.toLowerCase().includes(query))
+            );
+            return matchesCategory && matchesSearch;
+        });
+        
+        renderRecipes(filtered);
+    }
+
+    // Event Listener Input Search
+    searchInput.addEventListener('input', filterAndSearch);
+
+    // Event Listener Filter Tabs
+    tabs.forEach(tab => {
+        tab.addEventListener('click', (e) => {
+            tabs.forEach(t => t.classList.remove('active'));
+            e.target.classList.add('active');
+            currentCategory = e.target.getAttribute('data-category');
+            filterAndSearch();
+        });
+    });
+
+    // Initial Load
+    renderRecipes(recipes);
+</script>
+
+</body>
+</html>
